@@ -1,0 +1,29 @@
+version: '3'
+services:
+  web:
+    build: ./web
+    environment:
+       - APACHE_RUN_USER=#1000
+    volumes:
+      - ${APP_PATH_HOST}:${APP_PATH_CONTAINER}
+    ports:
+      - 8085:80
+    working_dir: ${APP_PATH_CONTAINER}
+  db:
+    image: mariadb
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: example
+    volumes:
+      - ${DB_PATH_HOST}:/var/lib/mysql
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8088:8080 
+  composer:
+    image: composer:1.6
+    volumes:
+      - ${APP_PATH_HOST}:${APP_PATH_CONTAINER}
+    working_dir: ${APP_PATH_CONTAINER}/blog
+    command: composer install  
